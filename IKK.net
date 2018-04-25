@@ -1,0 +1,23 @@
+# Created by BioNetGen 2.3.1
+begin parameters
+    1 vc             2700  # Constant
+    2 nc             3.3  # Constant
+    3 vNuc           vc/(nc+1)  # ConstantExpression
+    4 vCyt           vNuc*nc  # ConstantExpression
+    5 ka             0.001  # Constant
+    6 ki             .003  # Constant
+    7 kp             .0006  # Constant
+    8 na             6.02214e23  # Constant
+    9 conv           na*1e-15  # ConstantExpression
+   10 _InitialConc1  (.08e-6*vCyt)*conv  # ConstantExpression
+end parameters
+begin species
+    1 IKK(s~n) 9.982747423256e+04
+    2 IKK(s~a) 0.000000000000e+00
+    3 IKK(s~i) 0.000000000000e+00
+end species
+begin reactions
+    1 1 2 ka #_R1
+    2 2 3 ki #_R2
+    3 3 1 kp #_R3
+end reactions

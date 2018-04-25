@@ -1,0 +1,37 @@
+begin model
+begin parameters
+    vc  2700 #um^3
+    nc  3.3 #cytoplasm to nucleus ratio
+    vNuc  vc/(nc+1)
+    vCyt  vNuc*nc
+    ka  .001 #s^-1
+    ki  .003 #s^-1
+    kp  .0006 #s^-1
+    na  6.02214e23
+    conv  na*10e-15 #conc. (M) to molecule number conversion volume in um^3
+end parameters
+
+begin molecule types
+    IKK(s~n~a~i)
+end molecule types
+
+begin seed species
+    $IKK(s~n)  .08e-6*vCyt*conv
+end seed species
+
+begin reaction rules
+    IKK(s~n) -> IKK(s~a)  ka
+    IKK(s~a) -> IKK(s~i)  ki
+    IKK(s~i) -> IKK(s~n)  kp
+end reaction rules
+end model
+
+## actions ##
+generate_network({overwrite=>1})
+
+# Equilibration..
+setParameter("ka",0)
+simulate({method=>"ode",t_end=>100000,n_steps=>10,sparse=>1,steady_state=>1})
+saveConcentrations()
+setParameter("ka",.001)
+simulate({method=>"ode",t_end=>72000,n_steps=>36000})
